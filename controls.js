@@ -9,7 +9,7 @@ class Controls{
     }
 
     #addKeyboardListeners(){
-        document.onkeydown=(event)=>{ 
+        document.onkeydown=(event)=>{ //arrow funciton so 'this' referes to constructor obj
             switch(event.key){
                 case "ArrowLeft":
                     this.left=true;
@@ -24,7 +24,7 @@ class Controls{
                     this.reverse=true;
                     break;
             }
-            console.table(this); //output to console
+            //console.table(this); //output to console
         }
         document.onkeyup=(event)=>{ //sets key to false when key is released
             switch(event.key){
@@ -41,6 +41,7 @@ class Controls{
                     this.reverse=false;
                     break;
             }
+            //console.table(this);
         }
     }
 }
