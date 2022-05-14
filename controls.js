@@ -14,7 +14,7 @@ class Controls{
                 break;
         }
     }
-
+    //rules for how to handle keypresses
     #addKeyboardListeners(){
         document.onkeydown=(event)=>{ //arrow funciton so 'this' referes to constructor obj
             switch(event.key){

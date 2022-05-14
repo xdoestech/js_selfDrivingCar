@@ -8,11 +8,12 @@ class Sensor{
         this.rays=[];
         this.readings=[];//array of output from rays
     }
-
+    //updates car periodically 
+        //car 'watches' roadBoarders, traffic
     update(roadBorders,traffic){
         this.#castRays();
         this.readings=[];
-        //collect reading into array
+        //collect objects in sensor path into array
         for(let i=0;i<this.rays.length;i++){
             this.readings.push(
                 this.#getReading(
@@ -49,13 +50,13 @@ class Sensor{
                     ray[0],
                     ray[1],
                     poly[j],
-                    poly[(j+1)%poly.length]
+                    poly[(j+1)%poly.length] //to ensure value is always in bounds
                 );
             if(value){
                 touches.push(value);//if intersection add to touches
             }
         } 
-    }       
+    }      
 
         if(touches.length==0){
             return null;
@@ -66,7 +67,7 @@ class Sensor{
             return touches.find(e=>e.offset==minOffset); //returns min offset by searching through touches for val == to min
         }
     }
-
+    //defines the rays or lines extending from car that act as sensor
     #castRays(){
         this.rays=[];
         for(let i=0;i<this.rayCount;i++){
@@ -79,7 +80,7 @@ class Sensor{
 
             //ray starting and ending positions
             const start={x:this.car.x, y:this.car.y};
-            const end={
+            const end={ //x, y positions 
                 x:this.car.x- 
                     Math.sin(rayAngle)*this.rayLength,
                 y:this.car.y-
@@ -88,7 +89,7 @@ class Sensor{
             this.rays.push([start,end]);
         }
     }
-
+    //draws car(s)
     draw(ctx){
         for(let i=0;i<this.rayCount;i++){
             let end=this.rays[i][1];

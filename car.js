@@ -1,10 +1,12 @@
 class Car{
     constructor(x,y,width,height,controlType,maxSpeed=3){
+        //SETTING INITIAL POSITION VALUES
         this.x=x;
         this.y=y;
         this.width=width;
         this.height=height;
 
+        //SETTING INITIAL MOVEMENT VALUES 
         this.speed=0;
         this.acceleration=0.2;
         this.maxSpeed=maxSpeed;
@@ -12,14 +14,25 @@ class Car{
         this.angle=0;
         this.damaged=false;
 
+        //SETTING CONTROL TYPE
+            //this.useBrain is true if controlType == "AI"
+        this.useBrain=controlType=="AI";
+        //ADDING SENSOR
         //only add sensor if not a DUMMY
         if(controlType!="DUMMY"){
             this.sensor=new Sensor(this);
+            //new nueral netowrk with array of values for
+                //input/hidden/output layers
+            this.brain=new NeuralNetwork(
+                //input layer count is the number of rays
+                [this.sensor.rayCount,6,4] //4 output layers (forward, backward,left, right)
+            );
         }
         this.controls=new Controls(controlType);
         
     }
-    //update raodBoarders and traffic
+
+    //updates sensor and RETURNS readings to nueral netowrk
     update(roadBorders,traffic){
         //car will not move if damaged
         if(!this.damaged){
@@ -29,6 +42,23 @@ class Car{
         }
         if(this.sensor){
             this.sensor.update(roadBorders,traffic);
+            //nueron recieve LOW values if reading is far
+            //HIGH values if reading is close
+            const offsets=this.sensor.readings.map(
+                //if reading is null return 0
+                //otherwise return 1-sensor offset
+                s=>s==null?0:1-s.offset
+            );
+            const outputs=NeuralNetwork.feedForward(offsets,this.brain);
+            //console.log(outputs); SEE OUTPUT ARRAY
+            
+            //set controls to be output of neural network
+            if(this.useBrain){
+                this.controls.forward=outputs[0];
+                this.controls.left=outputs[1];
+                this.controls.right=outputs[2];
+                this.controls.reverse=outputs[3];
+            }
         }
         
     }
@@ -80,6 +110,7 @@ class Car{
         return points;
     }
 
+    //Rules for movement of car (maxSpeed, friction, turning physics)
     #move(){
         //add acceleration
         if(this.controls.forward){
@@ -142,7 +173,7 @@ class Car{
             ctx.lineTo(this.polygon[i].x,this.polygon[i].y)
         }
         ctx.fill();
-
+        /////draws lines representing sensor if applicable 
         if(this.sensor){
             this.sensor.draw(ctx);
         }
