@@ -1,7 +1,7 @@
 class Sensor{
     constructor(car){
         this.car=car; 
-        this.rayCount=15; //three rays will extend as "sight"
+        this.rayCount=5; //three rays will extend as "sight"
         this.rayLength=150;//distance of "sight"
         this.raySpread=Math.PI/2; //angle of spread 45deg
 

@@ -1,3 +1,4 @@
+//used everywhere
 function lerp(A,B,t){
 //when t = 0 return A
 //when t = 1 return B
@@ -5,6 +6,7 @@ function lerp(A,B,t){
     return A+(B-A)*t;
 }
 
+//used in car.js
 //https://www.youtube.com/watch?v=fHOLQJo0FjQ
 function getIntersection(A,B,C,D){ 
     const tTop=(D.x-C.x)*(A.y-C.y)-(D.y-C.y)*(A.x-C.x);
@@ -26,7 +28,8 @@ function getIntersection(A,B,C,D){
     return null;
 }
 
-//
+//used in cars.js
+//#assesdamge
 function polysIntersect(poly1, poly2){
     for(let i=0;i<poly1.length;i++){
         for(let j=0;j<poly2.length;j++){
@@ -44,5 +47,18 @@ function polysIntersect(poly1, poly2){
         }
     }
     return false;
+}
+
+//used in visualizer.js
+function getRGBA(value){
+    const alpha=Math.abs(value);
+    //set color of line
+    //if value 0 do nothing else max color
+    //opacity is strength
+    const R=value<0?0:255;
+    const G=R; //yellow is green and red
+    const B=value>0?0:255;
+    return "rgba("+R+","+G+","+B+","+alpha+")";
+
 }
 

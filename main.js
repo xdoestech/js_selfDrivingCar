@@ -1,3 +1,11 @@
+/*
+CAR INIT HERE
+CAR: car.js
+SENSOR: sensor.js
+RAY COUNT INIT: sensor.js
+VISUALIZER: visualizer.js
+*/
+
 const carCanvas=document.getElementById("carCanvas");
 carCanvas.width=200;
 
@@ -15,7 +23,7 @@ const traffic=[
 ];
 animate();
 
-function animate(){
+function animate(time){
     //update every car in traffic
     for(let i=0;i<traffic.length;i++){
         traffic[i].update(road.borders,[]);
@@ -36,7 +44,9 @@ function animate(){
     }
     car.draw(carCtx, "blue");
     carCtx.restore();
-
+    //adds animation and draws network
+    networkCtx.lineDashOffset=-time/50; //animate netowork lines to move
+    //visualize nueral network
     Visualizer.drawNetwork(networkCtx,car.brain);
     requestAnimationFrame(animate);//calls animate many times
 }
