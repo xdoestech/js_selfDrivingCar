@@ -32,7 +32,31 @@ class NeuralNetwork{
         }
         return outputs; //an array of values indicatinng direction
     }
+    //mutate network
+        //amount is how far new biases and weights move away from original network
+    static mutate(network, amount=1){
+        network.levels.forEach(level => {
+            for(let i=0;i<level.biases.length;i++){
+                //new bias depending on amount
+                level.biases[i]=lerp(
+                    level.biases[i],
+                    Math.random()*2-1,
+                    amount
+                )
+            }
 
+            for(let i=0;i<level.weights.length;i++){
+                for(let j=0;j<level.weights[i].length;j++){
+                    //new weight depending on amount
+                    level.weights[i][j]=lerp(
+                        level.weights[i][j],
+                        Math.random()*2-1,
+                        amount
+                    )
+                }
+            }
+        });
+    }
 }
 
 
