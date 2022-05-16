@@ -1,5 +1,7 @@
+//car visual desing and js colors/shapes bs https://www.youtube.com/watch?v=SL6PfDpSjao&list=PLB0Tybl0UNfYoJE7ZwsBQoDIG4YN9ptyY&index=11
+
 class Car{
-    constructor(x,y,width,height,controlType,maxSpeed=3){
+    constructor(x,y,width,height,controlType,maxSpeed=3,color="blue"){
         //SETTING INITIAL POSITION VALUES
         this.x=x;
         this.y=y;
@@ -29,7 +31,23 @@ class Car{
             );
         }
         this.controls=new Controls(controlType);
-        
+
+        this.img=new Image();
+        this.img.src="car.png";
+
+        this.mask=document.createElement("canvas");
+        this.mask.width=width;
+        this.mask.height=height;
+
+        const maskCtx=this.mask.getContext("2d");
+        this.img.onload=()=>{
+            maskCtx.fillStyle=color;
+            maskCtx.rect(0,0,this.width,this.height);
+            maskCtx.fill();
+
+            maskCtx.globalCompositeOperation="destination-atop";
+            maskCtx.drawImage(this.img,0,0,this.width,this.height);
+        }
     }
 
     //updates sensor and RETURNS readings to nueral netowrk
@@ -80,6 +98,11 @@ class Car{
         return false;
     }
 
+    //asses stalled
+        //if car is moving behind another car for more than 5 seconds it has stalled
+            //check if car is behind another car
+            //time how long it stuck
+    
     //finds corners of 'car' rectangle object
     #creeatePolygon(){
         const points=[];
@@ -159,20 +182,37 @@ class Car{
     } 
 
     //draws car and passes in color
-    draw(ctx, color,drawSensor=false){
-        if(this.damaged){
-            ctx.fillStyle="red";
-        }else{
-            ctx.fillStyle=color;
-        }
+    draw(ctx,drawSensor=false){
+        ctx.save();
+        ctx.translate(this.x,this.y);
+        ctx.rotate(-this.angle);
+        ctx.drawImage(this.mask,
+            -this.width/2,
+            -this.height/2,
+            this.width,
+            this.height);
 
-        ctx.beginPath();
-        //use polygon corners to 'draw' shape 
-        ctx.moveTo(this.polygon[0].x,this.polygon[0].y);
-        for(let i=1;i<this.polygon.length;i++){
-            ctx.lineTo(this.polygon[i].x,this.polygon[i].y)
-        }
-        ctx.fill();
+        ctx.globalCompositeOperation="multiply";
+
+        ctx.drawImage(this.img,
+            -this.width/2,
+            -this.height/2,
+            this.width,
+            this.height);
+        ctx.restore();
+        // if(this.damaged){
+        //     ctx.fillStyle="red";
+        // }else{
+        //     ctx.fillStyle=color;
+        // }
+
+        // ctx.beginPath();
+        // //use polygon corners to 'draw' shape 
+        // ctx.moveTo(this.polygon[0].x,this.polygon[0].y);
+        // for(let i=1;i<this.polygon.length;i++){
+        //     ctx.lineTo(this.polygon[i].x,this.polygon[i].y)
+        // }
+        // ctx.fill();
         /////draws lines representing sensor if applicable 
         if(this.sensor && drawSensor){
             this.sensor.draw(ctx);
